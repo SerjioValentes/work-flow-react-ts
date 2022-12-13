@@ -63,7 +63,7 @@ const LoginPage = () => {
             <div className='border-sky-500 flex h-screen'>
                 <div className='m-auto p-20 rounded-xl border-2 border-'>
                     <div>
-                        <button onClick={checkSome}>LogIn / SignIn</button>
+                        <button onClick={checkSome}>{isSignUp ? 'Sign In' : 'Log In'}</button>
                     </div>
 
                     <div>
