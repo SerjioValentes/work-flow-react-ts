@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*@font-face {*/
+/*    font-family: 'CoreSansCBold';*/
+/*    src: url('../src/fonts/CoreSansC-35Light.svg');*/
+/*    src: local('☺'), url('../src/fonts/CoreSansC-65Bold.woff') format('woff'), url('../src/fonts/CoreSansC-65Bold.ttf') format('truetype'), url('../src/fonts/CoreSansC-65Bold.svg') format('svg');*/
+/*    font-weight: 500;*/
+/*    font-style: normal;*/
+/*}*/
