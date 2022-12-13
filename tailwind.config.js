@@ -7,10 +7,11 @@ module.exports = {
     extend: {},
     colors: {
       white: '#fff',
+      error: '#f58383',
     },
     bg: {
       white: '#fff',
-      primary: '#f58383',
+      red: '#f58383',
     },
     screens: {
       xs: '0',
