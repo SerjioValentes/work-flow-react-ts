@@ -1,7 +1,8 @@
 # Template of React / Mui / TypeScript / TailWind / Firestore
 
+## Excluded private files from project:
 
-### src/firebase.ts - private file include code
+### 1. src/firebase.ts - private file include code
 import { initializeApp } from "firebase/app";
 import 'firebase/firestore';
 

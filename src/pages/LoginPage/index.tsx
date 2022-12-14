@@ -1,24 +1,32 @@
 import React, {useState} from 'react';
 import {useStore} from 'effector-react';
 import $store, {setNewEmail, setNewPassword} from '../../store/store';
-
 import {Button, TextField} from "@mui/material";
 import {
     getAuth,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword, signOut,
+    signInWithEmailAndPassword,
 } from "firebase/auth";
 import fire from "../../firebase";
+import {useNavigate} from "react-router-dom";
+
+
 
 const LoginPage = ({setAccessToken}: { setAccessToken: any }) => {
-    const loginPageStore = useStore($store);
+    // FireBase auth
     const auth = getAuth(fire);
 
+    // Effector store
+    const loginPageStore = useStore($store);
+
+    // React states
     const [isSignUp, setIsSignUp] = useState(false)
     const [errorData, setErrorData] = useState<string | null>(null)
     const [errorEmail, setErrorEmail] = useState<string | null>(null)
 
-    // test functions
+    const navigate = useNavigate()
+
+    // Test functions
     const checkSome = () => {console.log(loginPageStore)}
 
     const validateEmail = (email:any) => {
@@ -32,24 +40,20 @@ const LoginPage = ({setAccessToken}: { setAccessToken: any }) => {
         setErrorData(null)
     }
 
-    // change sign In log In buttons
+    // Change sign In log In buttons
     const changeSignLogIn = () => {
         clearAllErrors()
         setIsSignUp(prevState => !prevState)
     }
 
-
     const signIn = () => {
-        console.log(loginPageStore.email)
-        console.log(loginPageStore.password)
-        const auth = getAuth();
-
 
         signInWithEmailAndPassword(auth, loginPageStore.email, loginPageStore.password)
             .then((userCredential:any) => {
 
                 setAccessToken(userCredential.user.accessToken)
                 console.log(userCredential.user.accessToken)
+                navigate("/", { replace: true });
 
             })
             .catch((error) => {
@@ -123,7 +127,7 @@ const LoginPage = ({setAccessToken}: { setAccessToken: any }) => {
 
                     {!isSignUp ?
                     <div className='text-center mt-6'>
-                        <Button onClick={signIn} type='submit' variant='contained'>Sign In</Button>
+                        <Button color='secondary' onClick={signIn} type='submit' variant='contained'>Sign In</Button>
                     </div>
                         :
                     <div className='text-center mt-6'>
