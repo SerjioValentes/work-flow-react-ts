@@ -1,5 +1,5 @@
 import HomePage from "../pages/HomePage";
-// import LoginPage from "../pages/LoginPage";
+import LoginPage from "../pages/LoginPage";
 import TasksBoardPage from "../pages/TasksBoardPage";
 
 export const routes: any = [
@@ -15,13 +15,9 @@ export const routes: any = [
     },
 ]
 
-// export const hiddenRoutes = [
-//     {
-//         path: '/404',
-//         component: <HomePage />,
-//     },
-//     {
-//         path: '/login',
-//         component: <LoginPage  setAccessToken={null}/>
-//     },
-// ]
+export const authRoutes = [
+    {
+        path: '/login',
+        component: <LoginPage />
+    },
+]

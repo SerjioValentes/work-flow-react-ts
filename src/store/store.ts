@@ -4,13 +4,13 @@ import { UserStore } from '../types/userStore'
 export const setNewEmail = createEvent<string>()
 export const setNewPassword = createEvent<string>()
 export const setErrors = createEvent<[]>()
-export const setAccessToken = createEvent<string>()
+export const setAccessTokenToStore = createEvent<string | null>()
 
 export default createStore<UserStore>({
     email: '',
     password: '',
     errors: null,
-    accessToken: '',
+    accessToken: null,
 }).on(setNewEmail, (state, email) => ({
     ...state,
     email
@@ -20,7 +20,7 @@ export default createStore<UserStore>({
 })).on(setErrors, (state, errors) => ({
     ...state,
     errors
-})).on(setAccessToken, (state, accessToken) => ({
+})).on(setAccessTokenToStore, (state, accessToken) => ({
     ...state,
     accessToken
 }))
