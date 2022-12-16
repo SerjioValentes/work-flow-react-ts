@@ -13,7 +13,7 @@ import $store from "./store/store";
 function App() {
     const loginPageStore = useStore($store);
 
-    const [accessToken, setAccessToken] = useState<string | null>(null)
+    // const [accessToken, setAccessToken] = useState<string | null>(null)
 
     // const navigate = useNavigate()
     const location = useLocation()
@@ -30,7 +30,7 @@ function App() {
         }
         else {
             setAccessTokenToStore(null);
-            setAccessToken(null)
+            // setAccessToken(null)
         }
     },[])
 
@@ -41,11 +41,6 @@ function App() {
                     <MenuWrapper>
                     <Routes>
                         {routes.map(authRender)}
-                        {/*{hiddenRoutes.map(renderRoute)}*/}
-                        {/*<Route*/}
-                        {/*    path="*"*/}
-                        {/*    element={<Navigate to="/404" replace />}*/}
-                        {/*/>*/}
                     </Routes>
                     </MenuWrapper>
                 </div>

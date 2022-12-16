@@ -24,8 +24,8 @@ const LoginPage = () => {
 
     // Test functions
     const checkSome = () => {
-        console.log(loginPageStore)
-    }
+        console.log(loginPageStore);
+    };
 
     const validateEmail = (email: any) => {
         return email.match(
@@ -36,20 +36,21 @@ const LoginPage = () => {
     const clearAllErrors = () => {
         setErrorEmail(null);
         setErrorData(null);
-    }
+    };
 
     // Change sign In log In buttons
     const changeSignLogIn = () => {
         clearAllErrors();
         setIsSignUp(prevState => !prevState);
-    }
+    };
 
     const signIn = () => {
         signInWithEmailAndPassword(auth, loginPageStore.email, loginPageStore.password)
             .then((userCredential: any) => {
                 // setAccessToken(userCredential.user.accessToken);
 
-                window.localStorage.setItem('accessToken', userCredential.user.accessToken)
+                window.localStorage.setItem('accessToken', userCredential.user.accessToken);
+                window.localStorage.setItem('userEmail', userCredential.user.email);
                 setAccessTokenToStore(userCredential.user.accessToken);
                 navigate("/", {replace: true});
             })
@@ -75,6 +76,7 @@ const LoginPage = () => {
                         email: userCredential?.user?.email,
                         uid: userCredential?.user?.uid,
                         tasks: [],
+                        giftBoards: [],
                     }
 
                     setFirestoreCollection(userInfo)

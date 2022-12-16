@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, Dialog, DialogTitle, Menu, MenuItem, Paper, TextField} from "@mui/material";
 import {updateDoc, arrayUnion, arrayRemove} from "firebase/firestore";
 import {fireDb} from '../../firebase'
@@ -12,7 +12,8 @@ const Index = () => {
         const [temporaryTasksForRemove, setTemporaryTasksForRemove] = useState<{} | null>(null)
 
         const {watch, register} = useForm()
-        const userCollection = doc(fireDb, "users", "test4@user.com");
+        let userCollection = useRef<any>(null)
+        // const userEmail = window.localStorage.getItem('userEmail')
         const open = Boolean(anchorEl);
 
         // Open menu
@@ -31,31 +32,31 @@ const Index = () => {
                 title: watch('taskTitle'),
                 description: watch('taskDescription'),
             }
-            await updateDoc(userCollection, {
+            await updateDoc(userCollection.current, {
                 tasks: arrayUnion(task)
             });
             getAllTasks()
         }
 
         const getAllTasks = async () => {
-            const docRef = doc(fireDb, "users", "test4@user.com",);
-            const docSnap = await getDoc(docRef);
-
+            // const docRef = doc(fireDb, "users", "test4@user.com",);
+            const docSnap = await getDoc(userCollection.current);
+            
             if (docSnap.exists()) {
-                const data = docSnap.data()
+                const data:any = docSnap.data()
                 setTasks(data.tasks)
             } else
                 console.log("No such document!");
         }
 
         const deleteThisTask = async (title: string, description: string) => {
-            const tasksSegment = doc(fireDb, "users", "test4@user.com");
+            // const tasksSegment = doc(fireDb, "users", "test4@user.com");
 
             // Set array which you will want to remove
             const removeArray = {title, description}
 
             handleClose()
-            await updateDoc(tasksSegment, {
+            await updateDoc(userCollection.current, {
                 tasks: arrayRemove(removeArray)
             }).then(() => {
                 getAllTasks()
@@ -69,7 +70,7 @@ const Index = () => {
         }
 
         const editTask = async () => {
-            const tasksSegment = doc(fireDb, "users", "test4@user.com");
+            // const tasksSegment = doc(fireDb, "users", "test4@user.com");
             handleClose()
 
             const temporaryTask = {
@@ -77,11 +78,11 @@ const Index = () => {
                 description: watch('descriptionDialog')
             }
 
-            await updateDoc(tasksSegment, {
+            await updateDoc(userCollection.current, {
                 tasks: arrayRemove(temporaryTasksForRemove)
             })
 
-            await updateDoc(tasksSegment, {
+            await updateDoc(userCollection.current, {
                 tasks: arrayUnion(temporaryTask)
             }).then(() => {
                 getAllTasks()
@@ -90,6 +91,9 @@ const Index = () => {
 
 
         useEffect(() => {
+            const localEmail = window.localStorage.getItem('userEmail');
+            if(localEmail)
+                userCollection.current = doc(fireDb, "users", localEmail);
             getAllTasks().then(() => 0)
         }, [])
 
