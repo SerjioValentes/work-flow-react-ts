@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {useStore} from 'effector-react';
 import $store, {setAccessTokenToStore, setNewEmail, setNewPassword} from '../../store/store';
-import {Button, TextField} from "@mui/material";
+import {Box, Button, TextField, Typography} from "@mui/material";
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
 import fire, {fireDb} from "../../firebase";
 import {useNavigate} from "react-router-dom";
-import {doc, setDoc} from "firebase/firestore";
+import {arrayUnion, doc, setDoc, updateDoc} from "firebase/firestore";
 
 
 const LoginPage = () => {
@@ -77,6 +77,7 @@ const LoginPage = () => {
                         uid: userCredential?.user?.uid,
                         tasks: [],
                         giftBoards: [],
+                        invitedFrom: [],
                     }
 
                     setFirestoreCollection(userInfo)
@@ -98,20 +99,39 @@ const LoginPage = () => {
     // Adding first document to user collection
     const setFirestoreCollection = async (userInfo: { uid: any; email: any; tasks: any }) => {
         await setDoc(doc(fireDb, "users", userInfo.email), userInfo);
+        // await setDoc(doc(fireDb, "unionInfo", 'unionInfo'), userInfo);
+
+        const docRef = doc(fireDb, "unionInfo", 'unionInfo')
+
+        await updateDoc(docRef, {
+            allUsers: arrayUnion(userInfo.email)
+        });
+
     }
 
     return (
         <div className='border-sky-500 flex h-screen'>
-            <div className='m-auto p-20 rounded-xl border-2 border-'>
+            <Box sx={{
+                m: 'auto',
+                p: 20,
+                borderRadius: 10,
+                border: '1px solid black',
+                boxShadow: '67px 36px 0px -6px #546e7a',
+                color: 'se'
+
+            }}>
                 <div>
-                    <button onClick={checkSome}>{isSignUp ? 'Sign In' : 'Log In'}</button>
+                    <Typography variant='h3' fontFamily='monospace'>Enter</Typography>
                 </div>
 
                 <div>
                     <TextField
+
                         value={loginPageStore.email}
                         onChange={(e) => setNewEmail(e.target.value)}
-                        sx={{my: 2}}/>
+                        sx={{
+                            my: 2
+                        }}/>
                 </div>
 
                 <div className='text-xs text-error'>{errorEmail !== null && errorEmail}</div>
@@ -127,19 +147,31 @@ const LoginPage = () => {
                 <div className='text-xs text-error'>{errorData !== null && errorData}</div>
 
                 <div className='flex justify-end'>
-                    <Button onClick={changeSignLogIn}>{isSignUp ? 'Sign In' : 'Log In'}</Button>
+                    <Button
+                        sx={{
+                        fontFamily: 'monospace',
+                        m: 0,
+                        p: 0
+                    }}
+                            onClick={changeSignLogIn}>{isSignUp ? 'Sign In' : 'Sign Up'}</Button>
                 </div>
 
                 {!isSignUp ?
                     <div className='text-center mt-6'>
-                        <Button color='secondary' onClick={signIn} type='submit' variant='contained'>Sign In</Button>
+                        <Button
+                            sx={{
+                                py: 1,
+                                px: 4,
+                                fontFamily: 'monospace',
+                            }}
+                            color='secondary' onClick={signIn} type='submit' variant='contained'>Sign In</Button>
                     </div>
                     :
                     <div className='text-center mt-6'>
-                        <Button onClick={logIn} type='submit' variant='contained'>Log In</Button>
+                        <Button onClick={logIn} type='submit' variant='contained'>Sign Up</Button>
                     </div>}
 
-            </div>
+            </Box>
         </div>
     );
 };
