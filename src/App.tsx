@@ -55,7 +55,7 @@ function App() {
                            element={<Navigate replace state={{ from: location }} to="/login" />}
                     />
                 </Routes>
-                <LoginPage />
+                {/*<LoginPage />*/}
             </ThemeProvider>
         );
     }

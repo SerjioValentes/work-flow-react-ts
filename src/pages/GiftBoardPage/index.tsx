@@ -1,9 +1,20 @@
 import React, {useState} from 'react';
-import {Button, Dialog, DialogTitle, Divider, TextField, Typography} from "@mui/material";
+import {
+    Button,
+    Dialog,
+    Divider,
+    IconButton,
+    List,
+    ListItem,
+    TextField,
+    Typography
+} from "@mui/material";
 import {useForm} from "react-hook-form";
 import {validateEmail} from "../../components/verify";
-import {fireDb} from "../../firebase";
-import {doc, getDoc } from 'firebase/firestore';
+import {addNewGift} from '../../components/controllers/addNewGift';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
+import GiftBoardForUser from '../../components/GiftBoardForUser';
 
 const GiftBoardPage = () => {
     const {register, watch, reset} = useForm()
@@ -21,22 +32,15 @@ const GiftBoardPage = () => {
         })
     }
 
-    const showMeAllUsers = async () => {
-        // const citiesRef = fireDb.collection('users');
-        // const snapshot = await citiesRef.get();
-        // snapshot.forEach((item:any) => {
-        //     console.log(item.id, '=>', item.data());
-        // });
-    }
+    const createNewBoard = async () => {
+        const localUserEmail = window.localStorage.getItem('userEmail')
 
-    const createNewBoard = () => {
-        console.log(watch('newBoardTitleName'))
-        console.log(gifts)
-        console.log(usersWhoHaveAccess)
-        clearAllWatchers()
+        if (localUserEmail)
+            addNewGift(localUserEmail, gifts, watch('newBoardTitleName'), usersWhoHaveAccess)
 
-        if(!watch('newBoardTitleName'))
-            setBoardTitleError('Pls add title of board')
+        setCreateNewBoardDialog(false);
+
+        // clearAllWatchers()
     }
 
     const createNewGift = () => {
@@ -56,7 +60,7 @@ const GiftBoardPage = () => {
         })
     }
 
-    const createNewUser = () => {
+    const addNewUser = () => {
         let userWatcher = watch('newUser');
 
         if (validateEmail(userWatcher)) {
@@ -72,9 +76,18 @@ const GiftBoardPage = () => {
         }
     }
 
+    const deleteGift = (name: string) => {
+        const result = gifts.filter((item:{gift: string}) => item.gift !== name)
+        setGifts(result)
+    }
+
+    const deleteEmailFromList = (name: string) => {
+        const result = usersWhoHaveAccess.filter((item: string) => item !== name)
+        setUsersWhoHaveAccess(result)
+    }
+
     return (
         <div>
-            <Button onClick={showMeAllUsers}>showMeAllUsers</Button>
             <div>
                 <div>
                     <Button onClick={() => {
@@ -83,41 +96,64 @@ const GiftBoardPage = () => {
                         Create new gift board
                     </Button>
                 </div>
-
-
             </div>
+
+            <GiftBoardForUser />
 
 
             <Dialog
                 onClose={() => setCreateNewBoardDialog(false)}
                 open={createNewBoardDialog}>
-                <div className='p-4'>
+                <div className='p-10'>
 
                     <div className='flex justify-around'>
                         <TextField
+                            fullWidth
                             placeholder='Title ...'
                             {...register('newBoardTitleName')}/>
                     </div>
+
                     <div className='flex justify-around mt-1'>
                         <Typography color='error' fontSize={14}>
                             {boardTitleError && boardTitleError}
                         </Typography>
                     </div>
+
                     <Divider sx={{my: 2}}/>
 
                     <div className='flex justify-between'>
                         <TextField
+                            fullWidth
                             placeholder='Create new gift ...'
                             {...register('newGift')}/>
-                        <Button onClick={createNewGift}>Create</Button>
+
+                        <IconButton
+                            onClick={createNewGift}
+                            color="primary">
+                            <AddCircleOutlineIcon/>
+                        </IconButton>
                     </div>
 
                     <div className='my-2'>
-                        {gifts &&
-                            gifts.map((item: { gift: string }) =>
-                                <div key={item.gift}>
-                                    {item.gift}
-                                </div>)}
+                        <List>
+                            {gifts &&
+                                gifts.map((item: { gift: string }) =>
+                                    <div key={item.gift}>
+                                        <ListItem sx={{display: 'flex', justifyContent: 'space-between', p: 2}}>
+                                            <div>
+                                                {item.gift}
+                                            </div>
+
+                                            <IconButton
+                                                onClick={() => deleteGift(item.gift)}
+                                                color="primary">
+                                                <DeleteIcon />
+                                            </IconButton>
+
+                                        </ListItem>
+
+                                    </div>)}
+                        </List>
                     </div>
 
                     <div className='flex justify-between'>
@@ -125,19 +161,36 @@ const GiftBoardPage = () => {
                             placeholder='Add users to access to your gift board ...'
                             // error={validateEmail(watch('newUser'))}
                             {...register('newUser')}/>
-                        <Button onClick={createNewUser}>Add</Button>
+
+                        <IconButton
+                            onClick={addNewUser}
+                            color="primary">
+                            <AddCircleOutlineIcon/>
+                        </IconButton>
+
                     </div>
                     <Typography sx={{mt: 1}} fontSize={14} color='error'>
                         {emailError && emailError}
                     </Typography>
 
-                    <div className='my-2 flex'>
+                    <List>
                         {usersWhoHaveAccess &&
                             usersWhoHaveAccess.map((item: string) =>
                                 <div key={item}>
-                                    {item} /
+                                    <ListItem>
+                                        <div>
+                                        {item}
+                                        </div>
+
+                                        <IconButton
+                                            onClick={() => deleteEmailFromList(item)}
+                                            color="primary">
+                                            <DeleteIcon />
+                                        </IconButton>
+
+                                    </ListItem>
                                 </div>)}
-                    </div>
+                    </List>
 
                     <div>
                         <Button sx={{my: 1}} variant='contained' onClick={createNewBoard}>Create new Board</Button>
