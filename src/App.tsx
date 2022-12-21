@@ -41,6 +41,7 @@ function App() {
                     <MenuWrapper>
                     <Routes>
                         {routes.map(authRender)}
+                        {authRoutes.map(authRender)}
                     </Routes>
                     </MenuWrapper>
                 </div>

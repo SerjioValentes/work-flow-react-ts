@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import {useStore} from 'effector-react';
 import $store, {setAccessTokenToStore, setNewEmail, setNewPassword} from '../../store/store';
 import {Box, Button, TextField, Typography} from "@mui/material";
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
-import fire, {fireDb} from "../../firebase";
+import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import fire from "../../firebase";
 import {useNavigate} from "react-router-dom";
-import {arrayUnion, doc, setDoc, updateDoc} from "firebase/firestore";
+import {createNewUser} from "../../components/controllers/createNewUser";
 
 
 const LoginPage = () => {
@@ -21,11 +21,6 @@ const LoginPage = () => {
     const [errorEmail, setErrorEmail] = useState<string | null>(null);
 
     const navigate = useNavigate();
-
-    // Test functions
-    const checkSome = () => {
-        console.log(loginPageStore);
-    };
 
     const validateEmail = (email: any) => {
         return email.match(
@@ -69,20 +64,8 @@ const LoginPage = () => {
         if (validateEmail(loginPageStore.email) !== null) {
             setErrorEmail(null);
 
-            createUserWithEmailAndPassword(auth, loginPageStore.email, loginPageStore.password)
-                .then((userCredential) => {
-
-                    const userInfo = {
-                        email: userCredential?.user?.email,
-                        uid: userCredential?.user?.uid,
-                        tasks: [],
-                        giftBoards: [],
-                        invitedFrom: [],
-                    }
-
-                    setFirestoreCollection(userInfo)
-                        .then(() => {signIn()})
-                })
+            createNewUser( loginPageStore.email, loginPageStore.password)
+                .then(() => {signIn()})
                 .catch((error) => {
                     const errorCode = error.code;
 
@@ -96,17 +79,13 @@ const LoginPage = () => {
             setErrorEmail('Enter correct email address')
     };
 
-    // Adding first document to user collection
-    const setFirestoreCollection = async (userInfo: { uid: any; email: any; tasks: any }) => {
-        await setDoc(doc(fireDb, "users", userInfo.email), userInfo);
-        // await setDoc(doc(fireDb, "unionInfo", 'unionInfo'), userInfo);
-
-        const docRef = doc(fireDb, "unionInfo", 'unionInfo')
-
-        await updateDoc(docRef, {
-            allUsers: arrayUnion(userInfo.email)
-        });
-
+    const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter') {
+            if (isSignUp) {
+                logIn()
+            } else
+                signIn()
+        }
     }
 
     return (
@@ -139,6 +118,7 @@ const LoginPage = () => {
                 <div>
                     <TextField
                         type='password'
+                        onKeyDown={(e) => onKeyDown(e)}
                         value={loginPageStore.password}
                         onChange={(e) => setNewPassword(e.target.value)}
                         sx={{my: 2}}/>
@@ -149,11 +129,11 @@ const LoginPage = () => {
                 <div className='flex justify-end'>
                     <Button
                         sx={{
-                        fontFamily: 'monospace',
-                        m: 0,
-                        p: 0
-                    }}
-                            onClick={changeSignLogIn}>{isSignUp ? 'Sign In' : 'Sign Up'}</Button>
+                            fontFamily: 'monospace',
+                            m: 0,
+                            p: 0
+                        }}
+                        onClick={changeSignLogIn}>{isSignUp ? 'Log In' : 'Sign Up'}</Button>
                 </div>
 
                 {!isSignUp ?
@@ -164,7 +144,7 @@ const LoginPage = () => {
                                 px: 4,
                                 fontFamily: 'monospace',
                             }}
-                            color='secondary' onClick={signIn} type='submit' variant='contained'>Sign In</Button>
+                            color='secondary' onClick={signIn} type='submit' variant='contained'>Log In</Button>
                     </div>
                     :
                     <div className='text-center mt-6'>

@@ -2,6 +2,7 @@ import GiftBoardPage from "../pages/GiftBoardPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import TasksBoardPage from "../pages/TasksBoardPage";
+import GameCounterPage from "../pages/GameCounter";
 
 export const routes: any = [
     {
@@ -18,6 +19,11 @@ export const routes: any = [
         path: '/giftBoard',
         name: 'Gift board',
         component: <GiftBoardPage />,
+    },
+    {
+        path: '/gamePage',
+        name: 'Game boards',
+        component: <GameCounterPage />,
     },
 ]
 

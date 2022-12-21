@@ -9,13 +9,15 @@ const HomePage = () => {
 
     const showMeMore = async () => {
         const userEmail = window.localStorage.getItem('userEmail')
+        // const accessToken = window.localStorage.getItem('accessToken')
 
         // axios({
-        //     url: `https://trello-ts-react.firebaseapp.com/users/${userEmail}/email.json/`
+        //     url: `https://trello-ts-react.firebaseapp.com/users/${userEmail}.json?auth=${accessToken}/`
+        // }).then(res => {
+        //     console.log(res)
         // })
 
         if(userEmail){
-            // const userRef = collection(fireDb, "users", userEmail.toString());
             const getDocRef = doc(fireDb, `users/${userEmail}`);
             const docSnap = await getDoc(getDocRef);
             if (docSnap.exists()) {
@@ -24,7 +26,6 @@ const HomePage = () => {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
             }
-
         }
 
     }

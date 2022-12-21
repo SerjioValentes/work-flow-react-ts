@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
 import {
-    Button,
-    Dialog,
-    Divider,
-    IconButton,
-    List,
-    ListItem,
     TextField,
-    Typography
+    Dialog,
+    IconButton,
+    Typography,
+    ListItem,
+    Divider,
+    Button,
+    List,
 } from "@mui/material";
 import {useForm} from "react-hook-form";
-import {validateEmail} from "../../components/verify";
+import {putToArray, validateEmail} from "../../components/verify";
 import {addNewGift} from '../../components/controllers/addNewGift';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -51,8 +51,7 @@ const GiftBoardPage = () => {
             isItFree: true,
             isItShare: false,
         }
-
-        setGifts((prev: any) => {
+        setGifts((prev: []) => {
             return [...prev, newGift];
         })
         reset({
@@ -61,19 +60,11 @@ const GiftBoardPage = () => {
     }
 
     const addNewUser = () => {
-        let userWatcher = watch('newUser');
+            putToArray(watch('newUser'), setUsersWhoHaveAccess, setEmailError)
 
-        if (validateEmail(userWatcher)) {
-            setUsersWhoHaveAccess((prev: any) => {
-                return [...prev, userWatcher];
-            })
             reset({
                 newUser: '',
             })
-            setEmailError(null);
-        } else {
-            setEmailError('Enter correct email');
-        }
     }
 
     const deleteGift = (name: string) => {
@@ -100,7 +91,6 @@ const GiftBoardPage = () => {
 
             <GiftBoardForUser />
 
-
             <Dialog
                 onClose={() => setCreateNewBoardDialog(false)}
                 open={createNewBoardDialog}>
@@ -123,6 +113,10 @@ const GiftBoardPage = () => {
 
                     <div className='flex justify-between'>
                         <TextField
+                            onKeyDown={(e) => {
+                                if(e.key === 'Enter')
+                                    createNewGift()
+                            }}
                             fullWidth
                             placeholder='Create new gift ...'
                             {...register('newGift')}/>
@@ -158,8 +152,11 @@ const GiftBoardPage = () => {
 
                     <div className='flex justify-between'>
                         <TextField
+                            onKeyDown={(e) => {
+                                if(e.key === 'Enter')
+                                    addNewUser()
+                            }}
                             placeholder='Add users to access to your gift board ...'
-                            // error={validateEmail(watch('newUser'))}
                             {...register('newUser')}/>
 
                         <IconButton

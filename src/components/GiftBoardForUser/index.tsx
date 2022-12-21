@@ -1,17 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {arrayRemove, arrayUnion, doc, getDoc, updateDoc} from "firebase/firestore";
+import {doc, getDoc, updateDoc} from "firebase/firestore";
 import {fireDb} from "../../firebase";
-import {Button, Card, Divider, IconButton, List, ListItem, Typography} from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import {DeleteForever, PlaylistAddCheckCircle} from "@mui/icons-material";
-import {getUsersCollection, updateUserDocInCollections} from "../controllers/getUsersCollection";
+import {Card, IconButton, List, ListItem, Typography} from "@mui/material";
+import {PlaylistAddCheckCircle} from "@mui/icons-material";
+import {getUsersCollection} from "../controllers/getUsersCollection";
 
 const GiftBoardForUser = () => {
 
     const [userEmail, setUserEmail] = useState(window.localStorage.getItem('userEmail'))
-    const [invitedFrom, setInvitedFrom] = useState<any>([])
     const [accessBoards, setAccessBoards] = useState<any[] | null>(null)
-    // const [giftBoardFromOther, setInvitedFrom] = useState<any>([])
 
     const getUserInfo = async () => {
         if (userEmail) {
@@ -20,10 +17,8 @@ const GiftBoardForUser = () => {
 
             if (docSnap.exists()) {
                 const data = docSnap.data()
-                setInvitedFrom(data)
                 getAllGiftsFromBoard(data.invitedFrom)
             } else {
-                // doc.data() will be undefined in this case
                 console.log("No such document!");
             }
         }
@@ -53,7 +48,6 @@ const GiftBoardForUser = () => {
                 })
             } else console.log("No such document!");
         })).then(() => {
-            console.log(invitedFromTemp)
             setAccessBoards(invitedFromTemp)
         })
     }
@@ -61,10 +55,6 @@ const GiftBoardForUser = () => {
     useEffect(() => {
         getUserInfo()
     }, [])
-
-    const show = () => {
-        console.log(invitedFrom.invitedFrom)
-    }
 
     const takeGift = async (gift:string, titleBoard: string, isItShare: boolean, email: string) => {
         const userCollection = doc(fireDb, "users", email);
@@ -83,40 +73,11 @@ const GiftBoardForUser = () => {
                     await updateDoc(userCollection, {
                         giftBoards: userColl
                     })
-
-            }
-            )
-
-
-        // invitedFrom.invitedFrom.map(async (inviteItem: any) => {
-        //
-        // await updateDoc(userCollection, {
-        //     giftBoards: {
-        //         titleBoard: {
-        //             gift,
-        //             isItShare,
-        //             isItFree: false
-        //         }
-        //     }
-        // })
-        // })
-
-
-
-        // updateUserDocInCollections(email, removeArray, union, 'giftBoards')
-
-        // console.log(gift)
-        // console.log(titleBoard)
-        // console.log(isItShare)
-        // console.log(email)
+            })
     }
 
     return (
         <div>
-            {/*<Button onClick={getUserInfo}>getUserInfo</Button>*/}
-            {/*<Button onClick={getAllGiftsFromBoard}>getAllGiftsFromBoard</Button>*/}
-            <Button onClick={show}>show</Button>
-
             <div className='flex gap-5'>
                 {accessBoards &&
                     accessBoards.map((invitedFromItem: { titleBoard: string, gifts: [], email: string }, id: number) =>
@@ -124,9 +85,7 @@ const GiftBoardForUser = () => {
                             <Typography fontSize={18}>
                                 <strong>{invitedFromItem.titleBoard}</strong>
                             </Typography>
-
                             <List>
-
                                 {invitedFromItem.gifts.map((gift: { gift: string; isItFree: boolean; isItShare: boolean }) =>
                                     <ListItem key={gift.gift} sx={{
                                         display: 'flex',
@@ -142,13 +101,10 @@ const GiftBoardForUser = () => {
                                             color="primary">
                                             <PlaylistAddCheckCircle/>
                                         </IconButton>
-
-                                    </ListItem>
-                                )}
+                                    </ListItem>)}
                             </List>
                         </Card>
-                    )
-                }
+                    )}
             </div>
         </div>
     );

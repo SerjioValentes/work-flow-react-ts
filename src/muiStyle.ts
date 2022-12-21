@@ -12,6 +12,11 @@ export const theme = createTheme({
             light: '#e5ffff',
             dark: '#82ada9',
         },
+        error: {
+            main: '#e35f15',
+            light: '#e5ffff',
+            dark: '#82ada9',
+        },
     },
     breakpoints: {
         values: {
@@ -27,8 +32,11 @@ export const theme = createTheme({
             defaultProps: {
                 disableElevation: true
             },
-            // styleOverrides: {
-            //     root: {
+            styleOverrides: {
+                root: {
+                    // fontFamily: "monospace"
+                }
+            },
             //         textTransform: 'none'
             //     },
             //     sizeSmall: {
@@ -96,6 +104,6 @@ export const theme = createTheme({
     },
     typography: {
         fontFamily:
-            '"Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
+            'monospace, "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
     },
 });

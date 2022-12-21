@@ -10,7 +10,6 @@ export const addNewGift = async (email: string, gifts: [], boardTitle: string, i
     const giftBoard: object[] = []
 
     includedUsers.map(async (item: string) => {
-        console.log(item)
         await createNewUser(item, '0987654321')
             .then(async (res) => {
                 // START ------- Save access to other people
@@ -24,18 +23,12 @@ export const addNewGift = async (email: string, gifts: [], boardTitle: string, i
                     await updateDoc(docRefTemp, {
                         invitedFrom: arrayUnion(eachInvite)
                     })
-                    console.log("eachInvite:", eachInvite)
                 //END------ Save access to other people
             })
     })
 
     // eslint-disable-next-line array-callback-return
     gifts.map((item) => {
-        // const eachGift: any = {
-        //     gift: item,
-        //     isItFree: true,
-        //     isItShare: false,
-        // }
         giftBoard.push(item)
     })
 
@@ -47,7 +40,4 @@ export const addNewGift = async (email: string, gifts: [], boardTitle: string, i
     await updateDoc(docRef, {
         giftBoards: arrayUnion(resultBoard)
     });
-    console.log("resultBoard:", resultBoard)
-
-
 }
