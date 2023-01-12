@@ -22,11 +22,6 @@ const LoginPage = () => {
 
     const navigate = useNavigate();
 
-    // Test functions
-    const checkSome = () => {
-        console.log(loginPageStore);
-    };
-
     const validateEmail = (email: any) => {
         return email.match(
             /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -47,8 +42,6 @@ const LoginPage = () => {
     const signIn = () => {
         signInWithEmailAndPassword(auth, loginPageStore.email, loginPageStore.password)
             .then((userCredential: any) => {
-                // setAccessToken(userCredential.user.accessToken);
-
                 window.localStorage.setItem('accessToken', userCredential.user.accessToken);
                 window.localStorage.setItem('userEmail', userCredential.user.email);
                 setAccessTokenToStore(userCredential.user.accessToken);
@@ -71,7 +64,6 @@ const LoginPage = () => {
 
             createUserWithEmailAndPassword(auth, loginPageStore.email, loginPageStore.password)
                 .then((userCredential) => {
-
                     const userInfo = {
                         email: userCredential?.user?.email,
                         uid: userCredential?.user?.uid,
@@ -99,7 +91,6 @@ const LoginPage = () => {
     // Adding first document to user collection
     const setFirestoreCollection = async (userInfo: { uid: any; email: any; tasks: any }) => {
         await setDoc(doc(fireDb, "users", userInfo.email), userInfo);
-        // await setDoc(doc(fireDb, "unionInfo", 'unionInfo'), userInfo);
 
         const docRef = doc(fireDb, "unionInfo", 'unionInfo')
 
@@ -113,10 +104,9 @@ const LoginPage = () => {
         <div className='border-sky-500 flex h-screen'>
             <Box sx={{
                 m: 'auto',
-                p: 20,
+                p: 10,
                 borderRadius: 10,
                 border: '1px solid black',
-                boxShadow: '67px 36px 0px -6px #546e7a',
                 color: 'se'
 
             }}>

@@ -12,6 +12,11 @@ export const theme = createTheme({
             light: '#e5ffff',
             dark: '#82ada9',
         },
+        error: {
+            main: '#fc705c',
+            light: '#ff8b7b',
+            dark: '#c24c3c',
+        },
     },
     breakpoints: {
         values: {

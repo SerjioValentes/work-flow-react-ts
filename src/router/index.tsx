@@ -1,5 +1,6 @@
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
+import ViewTimePage from "../pages/viewTime";
 
 export const routes: any = [
     {
@@ -7,11 +8,17 @@ export const routes: any = [
         name: 'Home page',
         component: <HomePage/>,
     },
+    {
+        path: '/view-time',
+        name: 'Time page',
+        component: <ViewTimePage/>,
+    }
 ]
 
-export const authRoutes = [
+export const authRoutes: any = [
     {
         path: '/login',
-        component: <LoginPage />
-    },
+        name: 'Login page',
+        component: <LoginPage/>
+    }
 ]

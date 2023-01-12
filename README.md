@@ -1,13 +1,26 @@
-# Template of React / Mui / TypeScript / TailWind / Firestore
+# Mui / Tailwind / React / FireStore / ts
+    Есть нюансы - нет слайдера ожидания, не все ошибки обрабатываются и т.д.
+    Так же для ускорения разработки иногда использовался тип any 
+    Возможно есть лишние зависимости тк тестовый - это ответвление от основного моего шаблона
 
-## Excluded private files from project:
+## Как пользоваться:
+    Сначала необходимо зарегистрироваться - Sign Up 
+    Далее войти - Sign In
+    На странице создания ссылки - добавить пользователей и создать ссылку
+    На странице отсчета таймера будет виден обратный отсчет, как только придет с бд 
+    Количетсво пользователей не ограничено, которое можно добавить
 
-### Private file include code - src/firebase.ts
+## Важные моменты
+    - Страница авторизации - Записывает в ls access token и просто прверяет на наличие токена в ls
+    Для надежности лучше отправлять токен авторизации при каждом обращении в бд (можно реализовать через интерсептор в axios)
+
+    - Файл firebase.ts отсутствует в проекте, для того чтобы его развернуть на своем проекте - нужно создать в корне firebase.ts и создать проект в firebase console и подключить firestore
 ```
 import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore"
 import 'firebase/firestore';
 
-const firebaseConfig:any = {
+const firebaseConfig = {
 apiKey: "",
 authDomain: "",
 projectId: "",
@@ -15,101 +28,11 @@ storageBucket: "",
 messagingSenderId: "",
 appId: ""
 };
-let fire = initializeApp(firebaseConfig);
+
+const fire = initializeApp(firebaseConfig);
+export const fireDb = getFirestore();
 export default fire;
 ```
-
-## Other
-
-START Example how to look firestore model for task board and tasks
-
-```
-        let tas = [
-            {
-                title: 'board_1',
-                tasks: {
-                    title: 'name',
-                    descr: 'descr',
-                },
-            },
-            {
-                boardTitle: 'board_2',
-                tasks: {
-                    title: 'name',
-                    descr: 'descr',
-                },
-            },
-        ]
-```
-
-END Example how to look firestore model
-
----------- Admin Page ----------
-add new arrays to add access for users
-We need to download all boards and will try to update  - dont do that - if users wil be 1000
----------- User Page ----------
-We have to make object with there users who invited admin
-Должен быть еще объект с теми пользователями которые его пригласили
-
-Firebase model how it will looks
-```
-const originalFireBaseModel = {
-email: '',
-uid: '',
-tasks: '',
-invitedFrom: [
-            {
-                userWhoInvited: 'user4@test.com',
-                acceptedBoards: ['giftBoard_01'],
-            },
-            {
-                userWhoInvited: 'user7@test.com',
-                acceptedBoards: ['giftBoard_06'],
-            },
-            ],
-giftBoards: [
-    {
-        giftBoard_01: [
-            {
-                gift: 'idea_01',
-                isItFree: true,
-                isItShare: false,
-            },
-            {
-                gift: 'idea_02',
-                isItFree: true,
-                isItShare: false,
-            },
-        ],
-        includedUsers: ['user1@test.com', 'user2@test.com', 'user3@test.com'],
-       
-    },
-    {
-        giftBoard_02: [
-            {
-                gift: 'idea_01',
-                isItFree: true,
-                isItShare: false,
-            },
-            {
-                gift: 'idea_02',
-                isItFree: true,
-                isItShare: false,
-            },
-                ],
-                includedUsers: ['user2@test.com', 'user3@test.com'],
-            }
-        ],
-    }
-```
-
-
-Options of invite to other people to app
-    - Send invite to app (because this user not yet registered)
-    - When user create gift board with unvited users to this board, automatically will be create this users with random password  
-        just create a new users - if user is created it drop a error
-How to get collections read here -
-https://medium.com/firebase-tips-tricks/how-to-list-all-subcollections-of-a-cloud-firestore-document-17f2bb80a166
 
 
 
